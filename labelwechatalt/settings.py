@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'wechat.apps.WechatConfig',
 ]
 
 MIDDLEWARE = [
@@ -117,4 +118,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/wechatstatic/'
+
+INIT_DATA_DIR = 'e:/data/wechat/anno/'
+ARTICLES_FILE = os.path.join(INIT_DATA_DIR, 'hard_articles.json')
+MENTIONS_FILE = os.path.join(INIT_DATA_DIR, 'hard_article_mentions.json')

@@ -69,25 +69,40 @@ def get_candidates_of_mentions(mentions, label_results):
 
     mention_candidates = list()
     for m in mentions:
-        mention_id = m['mention_id']
-        # print mention_id
-        lr = label_results.get(mention_id, None)
-        if lr:
-            lr_disp = dict()
-            lr_disp['cur_state'] = lr.cur_state
-            if lr.cur_state == 3:
-                lr_disp['account'] = get_account_info(lr.account_id)
-            # lr_disp['is_franchise'] = lr.is_franchise
-            lr_disp['is_wrong_span'] = lr.is_wrong_span
-            tup = (m, True, lr_disp)
-            mention_candidates.append(tup)
-        else:
-            data = json.dumps({'query': 'candidates', 'name_str': m['name_str']})
-            res = __query_wechat_dispatcher(data)
-            # print res
-            tup = (m, False, res['candidates'])
-            mention_candidates.append(tup)
+        # mention_id = m['mention_id']
+        data = json.dumps({'query': 'candidates', 'name_str': m['name_str']})
+        res = __query_wechat_dispatcher(data)
+        # print res
+        tup = (m, False, res['candidates'])
+        mention_candidates.append(tup)
     return mention_candidates
+
+
+# def get_candidates_of_mentions(mentions, label_results):
+#     if not mentions:
+#         return None
+#
+#     mention_candidates = list()
+#     for m in mentions:
+#         mention_id = m['mention_id']
+#         # print mention_id
+#         lr = label_results.get(mention_id, None)
+#         if lr:
+#             lr_disp = dict()
+#             lr_disp['cur_state'] = lr.cur_state
+#             if lr.cur_state == 3:
+#                 lr_disp['account'] = get_account_info(lr.account_id)
+#             # lr_disp['is_franchise'] = lr.is_franchise
+#             lr_disp['is_wrong_span'] = lr.is_wrong_span
+#             tup = (m, True, lr_disp)
+#             mention_candidates.append(tup)
+#         else:
+#             data = json.dumps({'query': 'candidates', 'name_str': m['name_str']})
+#             res = __query_wechat_dispatcher(data)
+#             # print res
+#             tup = (m, False, res['candidates'])
+#             mention_candidates.append(tup)
+#     return mention_candidates
 
 
 def get_article_id_mentions(username, expected_article_idx):
@@ -105,9 +120,10 @@ def get_account_name(account_id):
     return nickname
 
 
+# TODO
 def get_account_info(account_id):
-    name = get_account_name(account_id)
-    return {'name': name}
+    # name = get_account_name(account_id)
+    return {'name': 'OK'}
 
 
 def get_article_info(article_id):
@@ -152,7 +168,7 @@ def __highlight_mentions_in_text(mentions, text, label_results, start_mention_id
         mention_idx = i + start_mention_idx
         span_class = 'span-mention'
         mention_id = m['mention_id']
-        if mention_id in label_results:
+        if label_results and mention_id in label_results:
             span_class += ' span-mention-labeled'
         span_attrs = 'id="mention-span-%d" class="%s" onclick="mentionClicked(%d, \'%s\')' % (
             mention_idx, span_class, mention_idx, mention_id)
