@@ -121,5 +121,14 @@ USE_TZ = True
 STATIC_URL = '/wechatstatic/'
 
 INIT_DATA_DIR = 'e:/data/wechat/anno/'
+
 ARTICLES_FILE = os.path.join(INIT_DATA_DIR, 'hard_articles.json')
 MENTIONS_FILE = os.path.join(INIT_DATA_DIR, 'hard_article_mentions.json')
+ACCOUNT_INFO_FILE = os.path.join(INIT_DATA_DIR, 'account_nickname.csv')
+
+ACR_NAME_FILE = os.path.join(INIT_DATA_DIR, 'acr_name_filter.txt')
+EXTRA_ACR_NAME_FILE = os.path.join(INIT_DATA_DIR, 'acr_name_man.txt')
+EXPANSION_EXCLUDE_STRS_FILE = os.path.join(INIT_DATA_DIR, 'expansion_exclude_strs.txt')
+ABBREV_EXCLUDE_STRS_FILE = os.path.join(INIT_DATA_DIR, 'abbrev_exclude_strs.txt')
+
+ES_URL = '127.0.0.1:9200'

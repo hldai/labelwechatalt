@@ -63,17 +63,26 @@ def get_label_results(mentions, username):
     return label_result_dict
 
 
-def get_candidates_of_mentions(mentions, label_results):
+def __get_candidates_info(candidates, wechat_config):
+    candidate_dicts = list()
+    for c in candidates:
+        account_name = wechat_config.account_id_nickname_dict.get(c[0], 'NULL')
+        # print c, account_name
+        cdict = {'account_id': c[0], 'name': account_name}
+        candidate_dicts.append(cdict)
+    return candidate_dicts
+
+
+def get_candidates_of_mentions(wechat_config, mentions, label_results):
     if not mentions:
         return None
 
     mention_candidates = list()
     for m in mentions:
         # mention_id = m['mention_id']
-        data = json.dumps({'query': 'candidates', 'name_str': m['name_str']})
-        res = __query_wechat_dispatcher(data)
-        # print res
-        tup = (m, False, res['candidates'])
+        candidates = wechat_config.wcg.gen_candidates(m['name_str'])
+        candidate_dicts = __get_candidates_info(candidates, wechat_config)
+        tup = (m, False, candidate_dicts)
         mention_candidates.append(tup)
     return mention_candidates
 
@@ -120,10 +129,9 @@ def get_account_name(account_id):
     return nickname
 
 
-# TODO
-def get_account_info(account_id):
-    # name = get_account_name(account_id)
-    return {'name': 'OK'}
+def get_account_info(wechat_config, account_id):
+    name = wechat_config.account_id_nickname_dict.get(account_id, 'NULL')
+    return {'name': name}
 
 
 def get_article_info(article_id):
@@ -200,10 +208,12 @@ def highlight_mentions_para(contents, mentions, label_results):
     return disp_text
 
 
-def search_candidates(qstr):
-    data = json.dumps({'query': 'candidates', 'name_str': qstr})
-    res = __query_wechat_dispatcher(data)
-    return res['candidates']
+def search_candidates(wechat_config, qstr):
+    candidates = wechat_config.wcg.gen_candidates(qstr)
+    candidate_dicts = __get_candidates_info(candidates, wechat_config)
+    # data = json.dumps({'query': 'candidates', 'name_str': qstr})
+    # res = __query_wechat_dispatcher(data)
+    return candidate_dicts
 
 
 def update_label_result(username, post_data):

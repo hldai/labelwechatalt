@@ -12,15 +12,6 @@
 </head>
 <body>
 
-{% if username %}
-
-<div class="navbar">
-    <ul class="nav navbar-nav">
-        <li><a href="{% url 'wechat:index' %}"> {{ username }} </a></li>
-        <li class="active"><a href="{% url 'wechat:logout' %}">Log out</a></li>
-    </ul>
-</div>
-
 <div class="container">
 
     <div class="row">
@@ -123,10 +114,6 @@
     </div>
     </div>
 </div>
-
-{% else %}
-Not logged in.
-{% endif %}
 
 </body>
 </html>
