@@ -1,4 +1,6 @@
 var cur_mention_idx = 0;
+var results = {};
+var wrong_spans = {};
 
 function hideClass(className) {
     var x = document.getElementsByClassName(className);
@@ -19,7 +21,8 @@ function mentionClicked(mention_idx, mention_id) {
     //hideClass("div-main-label");
     $('.span-mention').css({"background-color": "powderblue"});
     $('.span-mention-labeled').css({"background-color": "lightgreen"});
-    span_id = "#mention-span-" + cur_mention_idx.toString();
+//    span_id = "#mention-span-" + cur_mention_idx.toString();
+    span_id = "#mention-span-" + mention_id;
 //    alert(span_id);
     $(span_id).css({"background-color": "#FFFF55"});
     $('#div-mention-' + (cur_mention_idx + 1)).css({"display": "block"});
@@ -38,11 +41,16 @@ function showSearchResult(mention_id, search_url, csrf_token) {
     $(divid).empty().load(search_url, postdata);
 }
 
-function checkRadio(mention_id, btn_id) {
+function checkRadio(mention_id, account_id, btn_id) {
     link_radio_id = 'radio-link-' + mention_id;
     document.getElementById(link_radio_id).checked = true;
     document.getElementById(btn_id).checked = true;
 //    $('#div-link-' + mention_id).css({"opacity": "1"});
+    results[mention_id] = account_id;
+
+    resultStr = getResultStr();
+    console.log(resultStr);
+    window.parent.postMessage(resultStr, '*');
 }
 
 function linkChecked(mention_id) {
@@ -54,7 +62,19 @@ function linkChecked(mention_id) {
 }
 
 function nolinkChecked(mention_id) {
-//    $('#div-link-' + mention_id).css({"opacity": "0.9"});
+    results[mention_id] = 'NIL';
+
+    resultStr = getResultStr();
+    console.log(resultStr);
+    window.parent.postMessage(resultStr, '*');
+}
+
+function notsureChecked(mention_id) {
+    results[mention_id] = 'NOS';
+
+    resultStr = getResultStr();
+    console.log(resultStr);
+    window.parent.postMessage(resultStr, '*');
 }
 
 function prevMention() {
@@ -75,6 +95,19 @@ function nextMention() {
     } else {
         --cur_mention_idx;
     }
+}
+
+function getResultStr() {
+    rs = '';
+    for (k in results) {
+        rs += k + ' ' + results[k] + ';'
+    }
+    for (k in wrong_spans) {
+        if (wrong_spans[k]) {
+            rs += k + ' WS;'
+        }
+    }
+    return rs;
 }
 
 $(document).ready(function(){
@@ -101,14 +134,22 @@ $(document).ready(function(){
         }
     });
 
-    $(document).keyup(function(e) {
-        var keyCode = e.keyCode || e.which;
-
-        if (keyCode === 37) {
-            prevMention();
-        }
-        if (keyCode === 39) {
-            nextMention();
-        }
+    $('.span-mention').each(function(index) {
+        mention_id = $(this).attr('id').substring(13);
+        results[mention_id] = 'NIL';
+        wrong_spans[mention_id] = false;
     });
+
+    $('.checkbox-wrongspan').click(function(e) {
+        mention_id = $(this).attr('name').substring(10);
+        wrong_spans[mention_id] = $(this).is(':checked');
+
+        resultStr = getResultStr();
+        console.log(resultStr);
+        window.parent.postMessage(resultStr, '*');
+    });
+
+    resultStr = getResultStr();
+    console.log(resultStr);
+    window.parent.postMessage(resultStr, '*');
 });

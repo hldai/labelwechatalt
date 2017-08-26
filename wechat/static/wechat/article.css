@@ -20,6 +20,10 @@ body {
     cursor: hand;
 }
 
+.span-mention-first {
+    background-color: #FFFF55;
+}
+
 .span-mention-labeled {
     background-color: lightgreen;
 }

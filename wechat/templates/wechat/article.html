@@ -17,7 +17,6 @@
     <div class="row">
     <div class="div-review-info col-md-6">
 
-
         <div class="row">
             <div class="pull-right div-rev-control">
                 <a href="{% url 'wechat:article' prev_article_idx %}" class="btn btn-success">Prev Article</a>
@@ -38,14 +37,6 @@
 
         <form id="form-main" action="{% url 'wechat:label' next_article_idx %}" method="post">
         {% csrf_token %}
-
-        <div class="row">
-            <div class="pull-right div-rev-control">
-                <a class="btn btn-default" onclick="prevMention()">Prev</a>
-                <a class="btn btn-default" onclick="nextMention()">Next</a> &nbsp;&nbsp;
-                <input type="submit" id="btn-submit" value="Submit" class="btn"/>
-            </div>
-        </div>
 
         <div class="candidates-main">
         {% for mention, is_labeled, candidates in mention_candidates %}
@@ -71,7 +62,7 @@
                         </label>
                     </div>
                     <div class="col-md-3 div-radio-nolink" id="div-radio-notsure">
-                        <label class="radio-inline" onclick="nolinkChecked('{{ mention.mention_id }}')">
+                        <label class="radio-inline" onclick="notsureChecked('{{ mention.mention_id }}')">
                         <input type="radio" name="main-label-{{ mention.mention_id }}" value="notsure"> Not Sure
                         </label>
                     </div>
@@ -85,7 +76,7 @@
                             <!--<input type="checkbox" name="franchise-{{mention.mention_id}}" value="franchise"> Franchise-->
                         <!--</label>-->
                         <label class="checkbox-inline">
-                            <input type="checkbox" name="wrongspan-{{mention.mention_id}}" value="wrongspan"> Wrong Span
+                            <input type="checkbox" class="checkbox-wrongspan" name="wrongspan-{{mention.mention_id}}" value="wrongspan"> Wrong Span
                         </label>
                     </div>
                     </div>

@@ -169,7 +169,7 @@ def __paragraph_mention_dict(mentions):
     return pidx_mention_dict
 
 
-def __highlight_mentions_in_text(mentions, text, label_results, start_mention_idx):
+def __highlight_mentions_in_text(para_idx, mentions, text, label_results, start_mention_idx):
     new_text = u''
     last_pos = 0
     for i, m in enumerate(mentions):
@@ -178,8 +178,10 @@ def __highlight_mentions_in_text(mentions, text, label_results, start_mention_id
         mention_id = m['mention_id']
         if label_results and mention_id in label_results:
             span_class += ' span-mention-labeled'
-        span_attrs = 'id="mention-span-%d" class="%s" onclick="mentionClicked(%d, \'%s\')' % (
-            mention_idx, span_class, mention_idx, mention_id)
+        if para_idx == 0 and i == 0:
+            span_class += ' span-mention-first'
+        span_attrs = 'id="mention-span-%s" class="%s" onclick="mentionClicked(%d, \'%s\')' % (
+            mention_id, span_class, mention_idx, mention_id)
         left_pos, right_pos = m['span']
         new_text += u'%s<span %s">%s</span>' % (text[last_pos:left_pos], span_attrs,
                                                 text[left_pos:right_pos + 1])
@@ -202,7 +204,8 @@ def highlight_mentions_para(contents, mentions, label_results):
             disp_text += content
             continue
 
-        highlighted_text = __highlight_mentions_in_text(mentions, content, label_results, start_mention_idx)
+        highlighted_text = __highlight_mentions_in_text(i, mentions, content,
+                                                        label_results, start_mention_idx)
         start_mention_idx += len(mentions)
         disp_text += highlighted_text
     return disp_text
