@@ -130,4 +130,9 @@ EXTRA_ACR_NAME_FILE = os.path.join(INIT_DATA_DIR, 'acr_name_man.txt')
 EXPANSION_EXCLUDE_STRS_FILE = os.path.join(INIT_DATA_DIR, 'expansion_exclude_strs.txt')
 ABBREV_EXCLUDE_STRS_FILE = os.path.join(INIT_DATA_DIR, 'abbrev_exclude_strs.txt')
 
+ACCOUNT_NICKNAME_FILE = os.path.join(INIT_DATA_DIR, 'account_nickname.csv')
+ACCOUNT_NAME_WORDS_FILE = os.path.join(INIT_DATA_DIR, 'account_nicknames_seg.txt')
+WORD_NAME_FILE = os.path.join(INIT_DATA_DIR, 'word_to_name.txt')
+WORD_IDF_FILE = os.path.join(INIT_DATA_DIR, 'word_idf.txt')
+
 ES_URL = '127.0.0.1:9200'

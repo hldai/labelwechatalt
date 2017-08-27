@@ -5,6 +5,7 @@ import json
 
 from django.apps import AppConfig
 from django.conf import settings
+from namesearch import NameSearch
 
 from wechatcandgen import WechatCandGen
 
@@ -28,9 +29,16 @@ class WechatConfig(AppConfig):
         extra_acr_name_file = settings.EXTRA_ACR_NAME_FILE
         expansion_exclude_strs_file = settings.EXPANSION_EXCLUDE_STRS_FILE
         abbrev_exclude_strs_file = settings.ABBREV_EXCLUDE_STRS_FILE
-        es_url = settings.ES_URL
+        # es_url = settings.ES_URL
+
+        account_nickname_file = settings.ACCOUNT_NICKNAME_FILE
+        account_name_words_file = settings.ACCOUNT_NAME_WORDS_FILE
+        word_name_file = settings.WORD_NAME_FILE
+        word_idf_file = settings.WORD_IDF_FILE
+
+        self.ns = NameSearch(account_nickname_file, account_name_words_file, word_name_file, word_idf_file)
         self.wcg = WechatCandGen(acr_name_file, extra_acr_name_file, expansion_exclude_strs_file,
-                                 abbrev_exclude_strs_file, self.account_id_nickname_dict, es_url)
+                                 abbrev_exclude_strs_file, self.ns)
 
     def __load_account_id_nickname(self):
         account_id_nickname_file = settings.ACCOUNT_INFO_FILE

@@ -1,4 +1,5 @@
-from utils import load_names_file
+import jieba
+from utils import fix_jieba_words, load_names_file
 
 
 def load_acronym_to_name(acronym_name_file, exclude_strs):
@@ -67,7 +68,7 @@ def expand_word(word, acr_name_dict):
 
 class QueryExpansion:
     def __init__(self, acronym_name_file, extra_acronym_name_file, expand_exclude_strs_file,
-                 abbrev_exclude_strs_file, cn_seg_app):
+                 abbrev_exclude_strs_file):
         self.expand_exclude_strs = load_names_file(expand_exclude_strs_file)
         self.acr_name_dict = load_acronym_to_name(acronym_name_file, self.expand_exclude_strs)
 
@@ -75,9 +76,6 @@ class QueryExpansion:
         self.name_acr_dict = load_name_to_acronym(acronym_name_file, self.abbrev_exclude_strs)
 
         self.__load_extra_acronym_name_file(extra_acronym_name_file)
-
-        self.seg_app = cn_seg_app
-
     def __load_extra_acronym_name_file(self, filename):
         f = open(filename)
         for line in f:
@@ -172,7 +170,8 @@ class QueryExpansion:
         return exp_names
 
     def query_expansion(self, name_str):
-        name_words = self.seg_app.segment(name_str).split(' ')
+        # name_words = self.seg_app.segment(name_str).split(' ')
+        name_words = fix_jieba_words(jieba.cut(name_str))
         name_expand = self.__expand_name_words(name_words)
         name_abbrev = self.__abbrev_name_words(name_words)
 
@@ -186,7 +185,8 @@ class QueryExpansion:
         return exp_names
 
     def expand_name(self, name_str):
-        words = self.seg_app.segment(name_str).split(' ')
+        # words = self.seg_app.segment(name_str).split(' ')
+        words = fix_jieba_words(jieba.cut(name_str))
 
         new_name = self.__expand_name_words(words)
         if new_name != name_str:
@@ -194,8 +194,9 @@ class QueryExpansion:
         return ''
 
     def abbrev_name(self, name_str):
-        words = self.seg_app.segment(name_str).split(' ')
-        print ' '.join(words)
+        # words = self.seg_app.segment(name_str).split(' ')
+        words = fix_jieba_words(jieba.cut(name_str))
+        # print ' '.join(words)
 
         new_name = self.__abbrev_name_words(words)
         print new_name

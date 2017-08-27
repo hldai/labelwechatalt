@@ -19,7 +19,7 @@ es_url = 'localhost:9200'
 nickname_doc_type = 'nickname'
 article_doc_type = 'article'
 
-es = Elasticsearch([es_url])
+# es = Elasticsearch([es_url])
 
 
 def __query_wechat_dispatcher(data):
@@ -132,11 +132,6 @@ def get_account_name(account_id):
 def get_account_info(wechat_config, account_id):
     name = wechat_config.account_id_nickname_dict.get(account_id, 'NULL')
     return {'name': name}
-
-
-def get_article_info(article_id):
-    res = es.get(index=index_name, doc_type=article_doc_type, id=article_id)
-    return res['_source']
 
 
 def highlight_mentions(rev_text, mentions, label_results):
