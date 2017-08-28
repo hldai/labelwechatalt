@@ -76,6 +76,7 @@ class QueryExpansion:
         self.name_acr_dict = load_name_to_acronym(acronym_name_file, self.abbrev_exclude_strs)
 
         self.__load_extra_acronym_name_file(extra_acronym_name_file)
+
     def __load_extra_acronym_name_file(self, filename):
         f = open(filename)
         for line in f:

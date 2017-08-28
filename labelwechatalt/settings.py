@@ -134,5 +134,6 @@ ACCOUNT_NICKNAME_FILE = os.path.join(INIT_DATA_DIR, 'account_nickname.csv')
 ACCOUNT_NAME_WORDS_FILE = os.path.join(INIT_DATA_DIR, 'account_nicknames_seg.txt')
 WORD_NAME_FILE = os.path.join(INIT_DATA_DIR, 'word_to_name.txt')
 WORD_IDF_FILE = os.path.join(INIT_DATA_DIR, 'word_idf.txt')
+JIEBA_DICT_FILE = os.path.join(INIT_DATA_DIR, 'dict_fixed.txt')
 
 ES_URL = '127.0.0.1:9200'

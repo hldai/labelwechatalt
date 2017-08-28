@@ -5,8 +5,6 @@ import socket
 
 from django.shortcuts import get_object_or_404
 
-from elasticsearch import Elasticsearch
-
 # from models import LabelResultWe
 
 REV_DISPATCH_HOST, REV_DISPATCH_PORT = 'localhost', 9741
@@ -87,33 +85,6 @@ def get_candidates_of_mentions(wechat_config, mentions, label_results):
     return mention_candidates
 
 
-# def get_candidates_of_mentions(mentions, label_results):
-#     if not mentions:
-#         return None
-#
-#     mention_candidates = list()
-#     for m in mentions:
-#         mention_id = m['mention_id']
-#         # print mention_id
-#         lr = label_results.get(mention_id, None)
-#         if lr:
-#             lr_disp = dict()
-#             lr_disp['cur_state'] = lr.cur_state
-#             if lr.cur_state == 3:
-#                 lr_disp['account'] = get_account_info(lr.account_id)
-#             # lr_disp['is_franchise'] = lr.is_franchise
-#             lr_disp['is_wrong_span'] = lr.is_wrong_span
-#             tup = (m, True, lr_disp)
-#             mention_candidates.append(tup)
-#         else:
-#             data = json.dumps({'query': 'candidates', 'name_str': m['name_str']})
-#             res = __query_wechat_dispatcher(data)
-#             # print res
-#             tup = (m, False, res['candidates'])
-#             mention_candidates.append(tup)
-#     return mention_candidates
-
-
 def get_article_id_mentions(username, expected_article_idx):
     data = json.dumps({'query': 'article', 'username': username, 'article_idx': expected_article_idx})
     res = __query_wechat_dispatcher(data)
@@ -164,7 +135,7 @@ def __paragraph_mention_dict(mentions):
     return pidx_mention_dict
 
 
-def __highlight_mentions_in_text(para_idx, mentions, text, label_results, start_mention_idx):
+def __highlight_mentions_in_text(mentions, text, label_results, start_mention_idx):
     new_text = u''
     last_pos = 0
     for i, m in enumerate(mentions):
@@ -173,7 +144,7 @@ def __highlight_mentions_in_text(para_idx, mentions, text, label_results, start_
         mention_id = m['mention_id']
         if label_results and mention_id in label_results:
             span_class += ' span-mention-labeled'
-        if para_idx == 0 and i == 0:
+        if start_mention_idx == 0 and i == 0:
             span_class += ' span-mention-first'
         span_attrs = 'id="mention-span-%s" class="%s" onclick="mentionClicked(%d, \'%s\')' % (
             mention_id, span_class, mention_idx, mention_id)
@@ -199,7 +170,7 @@ def highlight_mentions_para(contents, mentions, label_results):
             disp_text += content
             continue
 
-        highlighted_text = __highlight_mentions_in_text(i, mentions, content,
+        highlighted_text = __highlight_mentions_in_text(mentions, content,
                                                         label_results, start_mention_idx)
         start_mention_idx += len(mentions)
         disp_text += highlighted_text

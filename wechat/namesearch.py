@@ -24,7 +24,7 @@ class NameSearch:
         words = set(words)
         accounts = self.__search(words, max_num_accounts, True)
         if len(accounts) < max_num_accounts:
-            accounts = self.__search(words, max_num_accounts, True)
+            accounts = self.__search(words, max_num_accounts, False)
         return accounts
 
     def __search(self, words, max_num_accounts, ignore_freq_words):
@@ -129,9 +129,9 @@ if __name__ == '__main__':
     word_name_file = 'e:/data/wechat/word_to_name.txt'
     word_idf_file = 'e:/data/wechat/word_idf.txt'
     ns = NameSearch(account_name_file, account_name_words_file, word_name_file, word_idf_file)
-    words = [u'黑龙江日报']
+    words = [u'黑龙江', u'日报']
     accounts = ns.search_accounts(words, 10)
     print len(accounts)
     for acc in accounts:
         print acc[1], acc[2]
-    time.sleep(10)
+    # time.sleep(10)

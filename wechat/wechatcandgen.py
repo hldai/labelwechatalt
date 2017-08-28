@@ -76,9 +76,10 @@ class WechatCandGen:
         max_num_candidates_per_name = 7
 
         # name_str_seg = self.cn_seg_app.segment(name_str)
-        name_words = jieba.cut(name_str)
-        # print ' '.join(name_words)
+        name_words = jieba.cut(name_str, HMM=False)
+        # name_words = jieba.cut_for_search(name_str)
         name_words = fix_jieba_words(name_words)
+        # print ' '.join(name_words)
 
         exp_names = self.qe.query_expansion_words(name_words)
 
@@ -91,6 +92,7 @@ class WechatCandGen:
         candidates_tmp = self.ns.search_accounts(name_words, max_num_candidates_ret)
         for c in candidates_tmp:
             account_id, account_name, score = c
+            # print account_name
             if all_tolerable_mismatches(account_name, name_str, 2):
                 # print 'ex', name
                 candidates.insert(0, c)
@@ -150,6 +152,8 @@ if __name__ == '__main__':
     account_name_words_file = 'e:/data/wechat/account_nicknames_seg.txt'
     word_name_file = 'e:/data/wechat/word_to_name.txt'
     word_idf_file = 'e:/data/wechat/word_idf.txt'
+
+    jieba.set_dictionary('e:/data/res/seg/dict_fixed.txt')
 
     ns = NameSearch(account_nickname_file, account_name_words_file, word_name_file, word_idf_file)
     wcg = WechatCandGen(acr_name_file, extra_acr_name_file, expansion_exclude_strs_file,
