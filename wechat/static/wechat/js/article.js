@@ -14,7 +14,7 @@ function mentionClicked(mention_idx, mention_id) {
 //    alert(cur_mention_idx);
     cur_mention_idx = mention_idx;
     if (cur_mention_idx + 1 == $('.span-mention').length) {
-        $('#btn-submit').css({'background-color': '#337ab7', 'color': '#fff'});
+        $('.div-review-text').css({'border-color': '6ff7ba'});
     }
 
     $('.div-candidates').css({"display": "none"});
@@ -30,6 +30,17 @@ function mentionClicked(mention_idx, mention_id) {
 }
 
 function showSearchResult(mention_id, search_url, csrf_token) {
+    qstr = 'input[name=link-label-' + mention_id + ']:checked'
+    var checkedCandidate = $(qstr);
+    if (checkedCandidate.length > 0) {
+        if (checkedCandidate.attr('id').startsWith('radio-ser')) {
+            results[mention_id] = 'NIL';
+            resultStr = getResultStr();
+            console.log(resultStr);
+            window.parent.postMessage(resultStr, '*');
+        }
+    }
+
     postdata = {
         csrfmiddlewaretoken: csrf_token,
         mention_id: mention_id,
@@ -41,23 +52,36 @@ function showSearchResult(mention_id, search_url, csrf_token) {
     $(divid).empty().load(search_url, postdata);
 }
 
-function checkRadio(mention_id, account_id, btn_id) {
+function checkRadio(mention_id, candidate_radio_id) {
+    candidate_id = candidate_radio_id.substring(20);
+
     link_radio_id = 'radio-link-' + mention_id;
     document.getElementById(link_radio_id).checked = true;
-    document.getElementById(btn_id).checked = true;
+    document.getElementById(candidate_radio_id).checked = true;
+//    document.getElementById(btn_id).checked = true;
 //    $('#div-link-' + mention_id).css({"opacity": "1"});
-    results[mention_id] = account_id;
+//    console.log(candidate_id);
 
+    results[mention_id] = candidate_id;
     resultStr = getResultStr();
     console.log(resultStr);
     window.parent.postMessage(resultStr, '*');
 }
 
-function linkChecked(mention_id) {
+function linkChecked(mention_id, first_candidate_id) {
     qstr = 'input[name=link-label-' + mention_id + ']:checked'
     var checkedCandidate = $(qstr);
-    if (checkedCandidate.length == 0) {
-        checkRadio(mention_id, 'radio-gen-' + mention_id + '-1')
+
+    if (checkedCandidate.length > 0) {
+//        candidate_id = checkedCandidate.attr('id');
+        checkRadio(mention_id, checkedCandidate.attr('id'));
+//        checkedCandidate.click();
+        return;
+    }
+
+    if (checkedCandidate.length == 0 && first_candidate_id != 'NULL') {
+//        checkRadio(mention_id, first_candidate_id, 'radio-gen-' + mention_id + '-1');
+        checkRadio(mention_id, 'radio-gen-' + mention_id + '-' + first_candidate_id);
     }
 }
 

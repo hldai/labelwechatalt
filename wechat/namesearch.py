@@ -18,7 +18,10 @@ class NameSearch:
         self.__load_word_name_file(word_name_file)
         self.__load_account_names(account_name_file)
         self.__load_account_name_words(account_name_words_file)
+
         self.__load_word_idf_values(word_idf_file)
+        self.word_idf[u'国家'] = 4.0
+        self.word_idf[u'中国'] = 4.0
 
     def search_accounts(self, words, max_num_accounts):
         words = set(words)

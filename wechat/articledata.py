@@ -7,47 +7,6 @@ from django.shortcuts import get_object_or_404
 
 # from models import LabelResultWe
 
-REV_DISPATCH_HOST, REV_DISPATCH_PORT = 'localhost', 9741
-DATA_END_STR = 'DHLDHLDHLEND'
-
-test_index_name = 'wechattest'
-index_name = 'wechat'
-es_url = 'localhost:9200'
-
-nickname_doc_type = 'nickname'
-article_doc_type = 'article'
-
-# es = Elasticsearch([es_url])
-
-
-def __query_wechat_dispatcher(data):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    try:
-        # Connect to server and send data
-        sock.connect((REV_DISPATCH_HOST, REV_DISPATCH_PORT))
-        sock.sendall(data)
-
-        received = ''
-        # Receive data from the server and shut down
-        while True:
-            data = sock.recv(1024)
-            received += data
-            if received.endswith(DATA_END_STR):
-                break
-        # print username, received
-        received = json.loads(received[:-len(DATA_END_STR)])
-    finally:
-        sock.close()
-
-    return received
-
-
-def get_user_num_articles(username):
-    data = json.dumps({'query': 'user_num_articles', 'username': username})
-    res = __query_wechat_dispatcher(data)
-    return res['num_articles']
-
 
 def get_label_results(mentions, username):
     label_result_dict = dict()
@@ -71,7 +30,7 @@ def __get_candidates_info(candidates, wechat_config):
     return candidate_dicts
 
 
-def get_candidates_of_mentions(wechat_config, mentions, label_results):
+def get_candidates_of_mentions(wechat_config, mentions):
     if not mentions:
         return None
 
@@ -80,24 +39,10 @@ def get_candidates_of_mentions(wechat_config, mentions, label_results):
         # mention_id = m['mention_id']
         candidates = wechat_config.wcg.gen_candidates(m['name_str'])
         candidate_dicts = __get_candidates_info(candidates, wechat_config)
-        tup = (m, False, candidate_dicts)
+        first_candidate_id = candidate_dicts[0]['account_id'] if candidate_dicts else 'NULL'
+        tup = (m, False, candidate_dicts, first_candidate_id)
         mention_candidates.append(tup)
     return mention_candidates
-
-
-def get_article_id_mentions(username, expected_article_idx):
-    data = json.dumps({'query': 'article', 'username': username, 'article_idx': expected_article_idx})
-    res = __query_wechat_dispatcher(data)
-    mentions = res['mentions']
-    # mentions = [Mention.from_dict(mdict) for mdict in mention_dicts]
-    return res['corrected_idx'], res['article_id'], mentions
-
-
-def get_account_name(account_id):
-    data = json.dumps({'query': 'account', 'account_id': account_id})
-    res = __query_wechat_dispatcher(data)
-    nickname = res['name']
-    return nickname
 
 
 def get_account_info(wechat_config, account_id):

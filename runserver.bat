@@ -1,1 +1,1 @@
-python manage.py runserver 9333
+python manage.py runserver 9333 --noreload

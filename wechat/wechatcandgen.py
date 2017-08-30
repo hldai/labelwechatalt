@@ -110,7 +110,7 @@ class WechatCandGen:
             if exp_name != name_str:
                 # name_exp_seg = self.cn_seg_app.segment(exp_name)
                 # name_words = name_exp_seg.split(' ')
-                name_words = jieba.cut(exp_name)
+                name_words = fix_jieba_words(jieba.cut(exp_name, HMM=False))
                 candidates_tmp = self.ns.search_accounts(name_words, max_num_candidates_ret)
                 for c in candidates_tmp:
                     cur_pos = WechatCandGen.__candidate_exist(c, candidates)

@@ -22,9 +22,14 @@ def index(request):
 
 
 def show_article(request, article_idx):
-    article_idx = int(article_idx)
     wechat_config = apps.get_app_config('wechat')
-    article = wechat_config.articles[article_idx]
+    article_idx = int(article_idx)
+    articles = wechat_config.articles
+
+    if article_idx < 1 or article_idx > len(articles):
+        return HttpResponse('Article not exist.')
+
+    article = articles[article_idx - 1]
     mentions = wechat_config.article_mentions_dict.get(article['article_id'], None)
     label_results = None
 
@@ -39,7 +44,7 @@ def show_article(request, article_idx):
     context['user_article_idx'] = article_idx
     context['prev_article_idx'] = article_idx - 1 if article_idx > 1 else 1
     context['next_article_idx'] = article_idx + 1
-    context['mention_candidates'] = articledata.get_candidates_of_mentions(wechat_config, mentions, label_results)
+    context['mention_candidates'] = articledata.get_candidates_of_mentions(wechat_config, mentions)
     return render(request, 'wechat/article.html', context)
 
 
@@ -70,6 +75,6 @@ def search_candidates(request):
     context = {
         'mention_id': mention_id,
         'candidates': candidates,
-        "candidate_type": "search"
+        "candidate_type": "ser"
     }
     return render(request, 'wechat/candidates.html', context)
