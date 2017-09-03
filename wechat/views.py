@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth import views as auth_views
+# from django.contrib.auth import views as auth_views
 from django.apps import apps
 
 import articledata
@@ -49,7 +49,8 @@ def show_article(request, article_idx):
 
 
 def logout(request):
-    return auth_views.logout(request, next_page=reverse('wechat:login'))
+    return HttpResponse('Hi')
+    # return auth_views.logout(request, next_page=reverse('wechat:login'))
 
 
 def label(request, article_idx):
